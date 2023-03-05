@@ -39,6 +39,8 @@ Install [goreleaser](https://goreleaser.com/) and run make. Binaries can be foun
 > make bin
 ```
 
+#
+
 Workflow
 --------
 Commit your changes to a branch as you normally do. Note that every commit will end up becoming a pull request.
