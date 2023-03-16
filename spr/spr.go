@@ -481,11 +481,15 @@ func commitsReordered(localCommits []git.Commit, pullRequests []*github.PullRequ
 }
 
 func (sd *stackediff) fetchAndGetGitHubInfo(ctx context.Context) *github.GitHubInfo {
-	sd.mustgit("fetch --tags", nil)
+	err := sd.gitcmd.Git("fetch --tags", nil)
+	if err != nil && strings.Contains(err.Error(), "would clobber existing tag") {
+		sd.mustgit("fetch", nil)
+	}
+
 	targetBranch := githubclient.GetRemoteBranchName(sd.gitcmd, sd.config.Repo)
 	rebaseCommand := fmt.Sprintf("rebase %s/%s --autostash",
 		sd.config.Repo.GitHubRemote, targetBranch)
-	err := sd.gitcmd.Git(rebaseCommand, nil)
+	err = sd.gitcmd.Git(rebaseCommand, nil)
 	if err != nil {
 		return nil
 	}
