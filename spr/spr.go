@@ -333,7 +333,10 @@ func (sd *stackediff) SyncStack(ctx context.Context) {
 	sd.profiletimer.Step("SyncStack::Start")
 	defer sd.profiletimer.Step("SyncStack::End")
 
-	githubInfo := sd.github.GetInfo(ctx, sd.gitcmd)
+	githubInfo := sd.fetchAndGetGitHubInfo(ctx)
+	if githubInfo == nil {
+		return
+	}
 
 	if len(githubInfo.PullRequests) == 0 {
 		fmt.Fprintf(sd.output, "pull request stack is empty\n")
